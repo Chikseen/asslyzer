@@ -2,7 +2,7 @@
   <div class="graphWrapper">
     <div v-for="(item, index) in toDisplay" :key="index + 2">
       <div>
-        <p class="graphWrapper_com_nos" :style="`top: ${index * 25}px;`">{{ arr[index] }}</p>
+        <p class="graphWrapper_com_nos" :style="`top: ${index * 25}px;`">{{ arr[index].name }}</p>
         <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.IF}px;`">IF</p>
       </div>
       <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.ID}px;`">ID</p>
@@ -24,24 +24,34 @@ export default {
       let localOffset = { IF: 0, ID: 25, RE: 50, X: 75, WB: 100 };
 
       for (let i = 0; i < this.arr.length; i++) {
-        console.log("calls");
-
-        switch (this.arr[i]) {
+        switch (this.arr[i].name) {
+          // MOV
           case "mov":
             console.log("mov");
-            if (i != 0) {
-              arr.push({ ...localOffset });
-              localOffset.RE = localOffset.RE + 50;
-              localOffset.X = localOffset.X + 50;
-              localOffset.WB = localOffset.WB + 50;
+            console.log("mov", this.arr[i].name);
+            if (this.arr[i - 1] && this.arr[i - 1].adrs && this.arr[i].adrs) {
+              console.log("hi", this.arr[i].adrs.filter((element) => this.arr[i - 1].adrs.includes(element)).length != 0);
+              if (this.arr[i].adrs.filter((element) => this.arr[i - 1].adrs.includes(element)).length != 0) {
+                arr.push({ ...localOffset });
+                localOffset.RE = localOffset.RE + 50;
+                localOffset.X = localOffset.X + 50;
+                localOffset.WB = localOffset.WB + 75;
+              } else {
+                arr.push({ ...localOffset });
+                localOffset.RE = localOffset.RE + 50;
+                localOffset.X = localOffset.X + 50;
+                localOffset.WB = localOffset.WB + 50;
+              }
             } else {
+              console.log("thisused???")
               arr.push({ ...localOffset });
               localOffset.RE = localOffset.RE + 50;
               localOffset.X = localOffset.X + 50;
               localOffset.WB = localOffset.WB + 75;
             }
             break;
-          case "imu":
+          // IMU
+          case "imul":
             console.log("imu");
             arr.push({ ...localOffset });
             localOffset.RE = localOffset.RE + 25;
@@ -61,7 +71,7 @@ export default {
             localOffset.WB = localOffset.WB - 50;
             break;
           default:
-            return null;
+            return { localOffset };
         }
       }
       return arr;
