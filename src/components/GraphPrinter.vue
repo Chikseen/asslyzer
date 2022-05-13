@@ -2,9 +2,9 @@
   <div class="graphWrapper">
     <div v-for="(item, index) in toDisplay" :key="index + 2">
       <div>
-        <p class="graphWrapper_com_nos" :style="`top: ${index * 25}px;`">{{ arr[index].name }}</p>
-        <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.IF}px;`">IF</p>
+        <p :id="'syncHover2' + index" class="graphWrapper_com_nos" :style="`top: ${index * 25 - 4}px;`">{{ arr[index].name }}</p>
       </div>
+      <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.IF}px;`">IF</p>
       <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.ID}px;`">ID</p>
       <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.RE}px;`">RE</p>
       <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.X}px;`">X</p>
@@ -43,7 +43,7 @@ export default {
                 localOffset.WB = localOffset.WB + 50;
               }
             } else {
-              console.log("thisused???")
+              console.log("thisused???");
               arr.push({ ...localOffset });
               localOffset.RE = localOffset.RE + 50;
               localOffset.X = localOffset.X + 50;
@@ -87,25 +87,37 @@ export default {
 
 <style lang="scss">
 .graphWrapper {
-  position: absolute;
+  position: relative;
   top: 0;
   left: 0;
+
+  &__printer {
+    width: 25px;
+    height: 25px;
+  }
 
   &_com {
     position: absolute;
     border: 1px solid;
-    width: 24px;
-    height: 24px;
+    width: 23px;
+    height: 23px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
     background-color: rgb(240, 240, 240);
+    font-size: 0.75rem;
+    border-radius: 2px;
 
     &_nos {
       position: absolute;
       border: none;
       left: 0;
-      width: 40px;
-      height: 24px;
-
+      width: 100%;
+      height: 25px;
+      padding-left: 5px;
       background-color: rgb(255, 255, 255);
+      border-radius: 5px;
     }
   }
 }
