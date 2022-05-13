@@ -2,14 +2,36 @@
   <div class="about">
     <h1>AssLyzer</h1>
     <p>a small webapp to analyise assambler code</p>
-    <p>just put the code in the text and let the magic happen</p>
+    <h4>just throw the code in the in the aera below and let the magic happen</h4>
+
     <button @click="loadExample">Load Example</button>
-    <div>
-      <textarea name="mainI" id="" cols="75" rows="30" v-model="objdumb"></textarea>
+    <div class="liveText">
+      <div>
+        <textarea name="mainI" id="" cols="75" rows="30" v-model="objdumb"></textarea>
+      </div>
+      <div>
+        <div>
+          <h5 style="line-height: 0; margin: 5px; white-space: nowrap">
+            Diffrent between matches and actual length of code (if to high there maybe is an error in the code)
+          </h5>
+          <div>
+            <p>Actuall: {{ this.objdumb.length != 0 ? this.objdumb.match(/\n/g).length : 0 }} Found: {{ this.input.length }} -> DIFF {{ lineDiff }}</p>
+          </div>
+        </div>
+        <div class="supportedWords">
+          <div v-for="(key, index) in Object.keys(allWords)" :key="index + 'aw'">
+            <p>{{ key }}</p>
+            <p>{{ allWords[key] }}</p>
+          </div>
+        </div>
+      </div>
     </div>
     <div>
       <br />
       <br />
+      <button @click="isEasyOffset = !isEasyOffset" :class="isEasyOffset ? 'active' : 'disabled'">Esay Offset</button>
+      <button @click="isautoReduct = !isautoReduct" :class="isautoReduct ? 'active' : 'disabled'">Auto Fieldsize reduction</button>
+      <button @click="isResultShow = !isResultShow" :class="isResultShow ? 'active' : 'disabled'">Show final Result</button>
       <p>Read input</p>
       <div class="arrlist_wrapper">
         <div class="arrlist">
@@ -25,7 +47,7 @@
         </div>
       </div>
     </div>
-    <GP class="gp" :arr="input" />
+    <GP class="gp" :arr="input" @pHoverO="highlihgt" @pHoverL="unhigh" :isEasyOffset="isEasyOffset" :isautoReduct="isautoReduct" :isResultShow="isResultShow" />
   </div>
 </template>
 
@@ -41,20 +63,34 @@ export default {
       input: [],
       current: "",
       objdumb: "",
+      seeAllWords: false,
+      allWords: {},
+      isEasyOffset: true,
+      isautoReduct: false,
+      isResultShow: true,
     };
+  },
+  computed: {
+    lineDiff() {
+      if (this.objdumb.length != 0) return this.objdumb.match(/\n/g).length - this.input.length;
+      else return 0;
+    },
   },
   methods: {
     highlihgt(i) {
-      document.getElementById("syncHover1" + i).style.backgroundColor = "#ff7171";
-      document.getElementById("syncHover2" + i).style.backgroundColor = "#ff7171";
+      if (i < this.input.length) {
+        document.getElementById("syncHover1" + i).style.backgroundColor = "#ff7171";
+        document.getElementById("syncHover2" + i).style.backgroundColor = "#ff7171";
+      }
     },
     unhigh(i) {
-      document.getElementById("syncHover1" + i).style.backgroundColor = "#ffffff";
-      document.getElementById("syncHover2" + i).style.backgroundColor = "#ffffff";
+      if (i < this.input.length) {
+        document.getElementById("syncHover1" + i).style.backgroundColor = "#ffffff00";
+        document.getElementById("syncHover2" + i).style.backgroundColor = "#ffffff00";
+      }
     },
     loadExample() {
-      this.objdumb = `
-      mov -0x10(%rbp),%rax
+      this.objdumb = `      mov -0x10(%rbp),%rax
       imul %rax,%rax
       cqto
       idivq -0x38(%rbp)
@@ -82,10 +118,10 @@ export default {
     checkmov(el) {
       console.log(el);
       let back = [];
+      this.allWords = {};
       if (el) {
         el.forEach((elm) => {
           const adrs = elm.match(/%+[a-zA-Z0-1]*/g);
-          console.log("l", adrs);
           const name = elm.match(/[A-Za-z]*/);
           if (name[0] === "cqto") back.push({ name: name[0], lvl: null, adrs: null });
           else {
@@ -95,6 +131,8 @@ export default {
               back.push({ name: name[0], lvl: 0, adrs: adrs });
             }
           }
+          if (!isNaN(this.allWords[name[0]])) this.allWords[name[0]] = this.allWords[name[0]] + 1;
+          else this.allWords[name[0]] = 1;
         });
       }
       return back;
@@ -104,8 +142,7 @@ export default {
     objdumb() {
       console.log(this.objdumb);
 
-      const mov = this.objdumb.match(/(mov|imul|idivq)+[\s]+[:$,%?\-<>A-Za-z0-9()]*|cqto+\n/g);
-      console.log(this.checkmov(mov));
+      const mov = this.objdumb.match(/(mov|imul|idivq|sub|add|movl|xorl|jmp|imulq|sarq|addl|subq|leaq|movq|jg|cmpq)+[\s]+[:$,%?\-<>A-Za-z0-9()]*|cqto+\n/g);
 
       this.input = this.checkmov(mov);
       return 1;
@@ -115,22 +152,49 @@ export default {
 </script>
 
 <style lang="scss">
+button {
+  border: none;
+  border-radius: 5px;
+  padding: 5px;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
 .arrlist {
   margin: 5px;
   padding: 5px;
+  border-radius: 5px;
+  transition: all 0.2s;
 
   &_wrapper {
     display: flex;
     flex-direction: row;
   }
+}
 
-  &:hover {
-    background-color: #ff7171;
-    border-radius: 10px;
+.supportedWords {
+  display: flex;
+  flex-direction: row;
+
+  & p {
+    margin: 0 5px;
   }
 }
+
 .gp {
   position: relative;
+}
+
+.liveText {
+  display: flex;
+  flex-direction: row;
+}
+
+.disabled {
+  background-color: #ff7171;
+}
+.active {
+  background-color: #89ff71;
 }
 </style>
 
