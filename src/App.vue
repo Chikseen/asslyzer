@@ -2,7 +2,7 @@
   <div class="about">
     <h1>AssLyzer</h1>
     <p>a small webapp to analyise assambler code</p>
-    <h4>just throw the code in the in the aera below and let the magic happen</h4>
+    <h4>just throw the code in the in the area below and let the magic happen</h4>
 
     <button @click="loadExample">Load Example</button>
     <div class="liveText">
