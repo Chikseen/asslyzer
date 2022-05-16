@@ -4,7 +4,127 @@
     "mov": {
       "acceptAdress": true,
       "dependsOnpredecessor": {
-        "Adress": "/%[a-zA-Z0-9]^*/",
+        "Adress": "%[a-zA-Z0-9]^*",
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 1,
+        "X": 1,
+        "WB": 2
+      }
+    },
+    "imul": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": "%[a-zA-Z0-9]^*",
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 1,
+        "X": 1,
+        "WB": 0
+      }
+    },
+    "cqto": {
+      "acceptAdress": false,
+      "dependsOnpredecessor": {
+        "Adress": null,
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 1,
+        "WB": 1
+      }
+    },
+    "idivq": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": "%[a-zA-Z0-9]^*",
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": -1,
+        "X": -2,
+        "WB": -2
+      }
+    },
+    "sub": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": "%[a-zA-Z0-9]^*",
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 1,
+        "X": 1,
+        "WB": 1
+      }
+    },
+    "add": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": "%[a-zA-Z0-9]^*",
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 2,
+        "X": 2,
+        "WB": 2
+      }
+    },
+    "leaq": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": "%[a-zA-Z0-9]^*",
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 1,
+        "X": 1,
+        "WB": 1
+      }
+    },
+    "jg": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": "%[a-zA-Z0-9]^*",
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 1,
+        "X": 1,
+        "WB": 1
+      }
+    },
+    "movl": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": null,
         "offset": null
       },
       "dependsOnsuccessor": null,
@@ -16,6 +136,125 @@
         "WB": 0
       }
     },
-    "test": {}
+    "xorl": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": null,
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 0,
+        "WB": 0
+      }
+    },
+    "jmp": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": null,
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 0,
+        "WB": 0
+      }
+    },
+    "imulq": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": null,
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 0,
+        "WB": 0
+      }
+    },
+    "sarq": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": null,
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 0,
+        "WB": 0
+      }
+    },
+    "addl": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": null,
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 0,
+        "WB": 0
+      }
+    },
+    "subq": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": null,
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 0,
+        "WB": 0
+      }
+    },
+    "movq": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": null,
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 0,
+        "WB": 0
+      }
+    },
+    "cmpq": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": null,
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 0,
+        "WB": 0
+      }
+    }
   }
 }

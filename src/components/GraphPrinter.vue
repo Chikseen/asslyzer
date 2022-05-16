@@ -7,11 +7,11 @@
         </p>
       </div>
       <div v-if="arr.length > 1">
-        <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.IF}px;`">IF</p>
-        <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.ID}px;`">ID</p>
-        <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.RE}px;`">RE</p>
-        <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.X}px;`">X</p>
-        <p class="graphWrapper_com" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.WB}px;`">WB</p>
+        <div v-for="(opp, i) in logic.instruction" :key="i + '2'">
+          <span class="graphWrapper_com" :style="`top: ${(index * 25)+ 11}px; left: ${(index + 2) * 25 + item[opp]}px;`">
+            <p>{{ opp }}</p>
+          </span>
+        </div>
         <p class="graphWrapper_space" v-if="item.spacer && isautoReduct" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.spacer}px;`">...</p>
       </div>
     </div>
@@ -22,6 +22,7 @@
 export default {
   props: {
     arr: { type: Array, default: () => [] },
+    logic: { type: Object, default: () => {} },
     isEasyOffset: { type: Boolean, default: true },
     isautoReduct: { type: Boolean, default: true },
     isResultShow: { type: Boolean, default: true },
@@ -29,7 +30,14 @@ export default {
   computed: {
     toDisplay() {
       let arr = [];
-      let localOffset = { IF: 0, ID: 25, RE: 50, X: 75, WB: 100, spacer: 0 };
+      let localOffset = { spacer: 0 };
+
+      if (this.logic.instruction) {
+        for (let i = 0; i < this.logic.instruction.length; i++) {
+          localOffset[this.logic.instruction[i]] = i * 25;
+        }
+      }
+
       for (let i = 0; i < this.arr.length; i++) {
         if (this.isautoReduct) {
           if (localOffset.RE - localOffset.ID > 250) {
@@ -39,104 +47,16 @@ export default {
             localOffset.spacer = localOffset.spacer + 100;
           } else localOffset.spacer = null;
         }
-        switch (this.arr[i].name) {
-          // MOV
-          case "mov":
-            if (this.arr[i - 1] && this.arr[i - 1].adrs && this.arr[i].adrs) {
-              if (this.arr[i].adrs.filter((element) => this.arr[i - 1].adrs.includes(element)).length != 0) {
-                arr.push({ ...localOffset });
-                localOffset.RE = localOffset.RE + 50;
-                localOffset.X = localOffset.X + 50;
-                localOffset.WB = localOffset.WB + 75;
-              } else {
-                arr.push({ ...localOffset });
-                localOffset.RE = localOffset.RE + 50;
-                localOffset.X = localOffset.X + 50;
-                localOffset.WB = localOffset.WB + 50;
-              }
-            } else {
-              arr.push({ ...localOffset });
-              localOffset.RE = localOffset.RE + 50;
-              localOffset.X = localOffset.X + 50;
-              localOffset.WB = localOffset.WB + 75;
-            }
-            break;
-          // IMU
-          case "imul":
-            arr.push({ ...localOffset });
-            localOffset.RE = localOffset.RE + 25;
-            localOffset.X = localOffset.X + 25;
-            break;
-          // CQTO
-          case "cqto":
-            arr.push({ ...localOffset });
-            localOffset.X = localOffset.X + 25;
-            localOffset.WB = localOffset.WB + 25;
-            break;
-          // IDIVQ
-          case "idivq":
-            arr.push({ ...localOffset });
-            localOffset.RE = localOffset.RE - 25;
-            localOffset.X = localOffset.X - 50;
-            localOffset.WB = localOffset.WB - 50;
-            break;
-          // SUB
-          case "sub":
-            arr.push({ ...localOffset });
-            localOffset.RE = localOffset.RE + 25;
-            localOffset.X = localOffset.X + 25;
-            localOffset.WB = localOffset.WB + 25;
-            break;
-          // SUB
-          case "add":
-            arr.push({ ...localOffset });
-            localOffset.RE = localOffset.RE + 50;
-            localOffset.X = localOffset.X + 50;
-            localOffset.WB = localOffset.WB + 50;
-            break;
-          // SUBQ
-          case "leaq":
-            arr.push({ ...localOffset });
-            localOffset.RE = localOffset.RE + 25;
-            localOffset.X = localOffset.X + 25;
-            localOffset.WB = localOffset.WB + 25;
-            break;
-          case "jg":
-            arr.push({ ...localOffset });
-            localOffset.RE = localOffset.RE + 25;
-            localOffset.X = localOffset.X + 25;
-            localOffset.WB = localOffset.WB + 25;
-            break;
-          case "movl":
-            arr.push({ ...localOffset });
-            break;
-          case "xorl":
-            arr.push({ ...localOffset });
-            break;
-          case "jmp":
-            arr.push({ ...localOffset });
-            break;
-          case "imulq":
-            arr.push({ ...localOffset });
-            break;
-          case "sarq":
-            arr.push({ ...localOffset });
-            break;
-          case "addl":
-            arr.push({ ...localOffset });
-            break;
-          case "subq":
-            arr.push({ ...localOffset });
-            break;
-          case "movq":
-            arr.push({ ...localOffset });
-            break;
-          case "cmpq":
-            arr.push({ ...localOffset });
-            break;
-          default:
-            return { localOffset };
-        }
+
+        const elment = this.logic.opperator[this.arr[i].name];
+        const merged = { ...elment, ...this.arr[i] };
+        arr.push({ ...localOffset });
+
+        this.logic.instruction.forEach((elm) => {
+          if (merged.move) {
+            localOffset[elm] = localOffset[elm] + merged.move[elm] * 25;
+          }
+        });
       }
       arr.push({ ...localOffset });
       return arr;

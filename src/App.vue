@@ -4,10 +4,21 @@
     <p>a small webapp to analyise assambler code</p>
     <h4>just throw the code in the in the area below and let the magic happen</h4>
 
+    <p>
+      <a href="https://github.com/Chikseen/asslyzer">Want to contribute ??? https://github.com/Chikseen/asslyzer</a>
+    </p>
+
     <button @click="loadExample">Load Example</button>
+    <div>
+      <button @click="isEditOpen = !isEditOpen" :class="!isEditOpen ? 'active' : 'disabled'">Edit ObjDumb Code</button>
+      <button @click="isEditOpen = !isEditOpen" :class="isEditOpen ? 'active' : 'disabled'">Edit config JSON</button>
+    </div>
     <div class="liveText">
       <div>
-        <textarea name="mainI" id="" cols="75" rows="30" v-model="objdumb"></textarea>
+        <textarea v-show="!isEditOpen" name="mainI" id="" cols="75" rows="30" v-model="objdumb"></textarea>
+        <textarea v-show="isEditOpen" name="mainI" id="" cols="75" rows="30" v-model="editLogic"></textarea>
+        <p v-if="!isValidJSON" @click="isEditOpen = true" class="disabled">!!! Error in Logic JSON, check the JSON part to continue</p>
+        <p v-if="!isValidJSON" @click="isEditOpen = true">{{ jsonError }}</p>
       </div>
       <div>
         <div>
@@ -28,6 +39,8 @@
     </div>
     <div>
       <br />
+      <button @click="toLoad = 'x86'" :class="toLoad == 'x86' ? 'active' : 'disabled'">x86-64</button>
+      <button @click="toLoad = 'CISC'" :class="toLoad == 'CISC' ? 'active' : 'disabled'">CISC</button>
       <br />
       <button @click="isEasyOffset = !isEasyOffset" :class="isEasyOffset ? 'active' : 'disabled'">Esay Offset</button>
       <button @click="isautoReduct = !isautoReduct" :class="isautoReduct ? 'active' : 'disabled'">Auto Fieldsize reduction</button>
@@ -47,13 +60,23 @@
         </div>
       </div>
     </div>
-    <GP class="gp" :arr="input" @pHoverO="highlihgt" @pHoverL="unhigh" :isEasyOffset="isEasyOffset" :isautoReduct="isautoReduct" :isResultShow="isResultShow" />
+    <GP
+      class="gp"
+      :arr="input"
+      :isEasyOffset="isEasyOffset"
+      :isautoReduct="isautoReduct"
+      :isResultShow="isResultShow"
+      :logic="logic"
+      @pHoverO="highlihgt"
+      @pHoverL="unhigh"
+    />
   </div>
 </template>
 
 <script>
 import GP from "@/components/GraphPrinter";
 import x86 from "@/x86.json";
+import CISC from "@/CISC.json";
 
 export default {
   components: {
@@ -66,10 +89,15 @@ export default {
       objdumb: "",
       seeAllWords: false,
       allWords: {},
-      isEasyOffset: true,
+      isEasyOffset: false,
       isautoReduct: false,
       isResultShow: true,
       logic: {},
+      toLoad: "x86",
+      isEditOpen: false,
+      isValidJSON: true,
+      editLogic: "",
+      jsonError: "",
     };
   },
   computed: {
@@ -117,7 +145,7 @@ export default {
       mov %rax,-0x18(%rbp)
       `;
     },
-    checkmov(el) {
+    checkmatches(el) {
       console.log(el);
       let back = [];
       this.allWords = {};
@@ -125,7 +153,7 @@ export default {
         el.forEach((elm) => {
           const adrs = elm.match(/%+[a-zA-Z0-1]*/g);
           const name = elm.match(/[A-Za-z]*/);
-          if (name[0] === "cqto") back.push({ name: name[0], lvl: null, adrs: null });
+          if (!this.logic.opperator[name[0]].acceptAdress) back.push({ name: name[0], lvl: null, adrs: null });
           else {
             if (elm.match(/\(/)) {
               back.push({ name: name[0], lvl: 1, adrs: adrs });
@@ -147,20 +175,43 @@ export default {
       const logicKeys = Object.keys(this.logic.opperator);
       let regexString = "";
 
-console.log("keys", logicKeys)
       for (let i = 0; i < logicKeys.length; i++) {
         if (i + 1 === logicKeys.length) regexString = regexString + logicKeys[i];
         else regexString = regexString + logicKeys[i] + "|";
       }
-      console.log("string", regexString);
-      const mov = this.objdumb.match(/(mov|imul|idivq|sub|add|movl|xorl|jmp|imulq|sarq|addl|subq|leaq|movq|jg|cmpq)+[\s]+[:$,%?\-<>A-Za-z0-9()]*|cqto+\n/g);
+      regexString = "(" + regexString + ")([\\s][:$,%?\\-<>A-Za-z0-9()]*)";
+      console.log("ref", regexString);
+      const regex = new RegExp(regexString, "g");
+      const matches = this.objdumb.match(regex);
 
-      this.input = this.checkmov(mov);
+      this.input = this.checkmatches(matches);
       return 1;
+    },
+    toLoad() {
+      if (this.toLoad === "x86") {
+        this.logic = x86;
+        this.editLogic = JSON.stringify(this.logic, null, 2);
+      }
+      if (this.toLoad === "CISC") {
+        this.logic = CISC;
+        this.editLogic = JSON.stringify(this.logic, null, 2);
+      }
+    },
+    editLogic() {
+      console.log("chenage");
+      try {
+        JSON.parse(this.editLogic); // precheck
+        this.logic = JSON.parse(this.editLogic);
+        this.isValidJSON = true;
+      } catch (e) {
+        this.isValidJSON = false;
+        this.jsonError = e;
+      }
     },
   },
   mounted() {
     this.logic = x86;
+    this.editLogic = JSON.stringify(this.logic, null, 2);
   },
 };
 </script>
@@ -170,8 +221,12 @@ button {
   border: none;
   border-radius: 5px;
   padding: 5px;
-  margin: 0 5px;
+  margin: 15px 5px 5px 5px;
   cursor: pointer;
+}
+
+textarea {
+  border-radius: 10px;
 }
 
 .arrlist {
@@ -209,6 +264,54 @@ button {
 }
 .active {
   background-color: #89ff71;
+}
+
+::-webkit-scrollbar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  transition: all 0.5s;
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #fdfdfd;
+    color: #24292f;
+  }
+  textarea {
+    color: #24292f;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #24292f;
+    color: #ececec;
+  }
+  textarea {
+    background-color: #1e1e1e;
+    color: #ececec;
+  }
+  .graphWrapper_com {
+    background-color: #1e1e1e;
+    border: #1e1e1e solid;
+  }
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f100;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background-color: #eeeeee;
+  transition: all 0.5s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #d3d3d3;
 }
 </style>
 
