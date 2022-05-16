@@ -53,6 +53,7 @@
 
 <script>
 import GP from "@/components/GraphPrinter";
+import x86 from "@/x86.json";
 
 export default {
   components: {
@@ -68,6 +69,7 @@ export default {
       isEasyOffset: true,
       isautoReduct: false,
       isResultShow: true,
+      logic: {},
     };
   },
   computed: {
@@ -142,11 +144,23 @@ export default {
     objdumb() {
       console.log(this.objdumb);
 
+      const logicKeys = Object.keys(this.logic.opperator);
+      let regexString = "";
+
+console.log("keys", logicKeys)
+      for (let i = 0; i < logicKeys.length; i++) {
+        if (i + 1 === logicKeys.length) regexString = regexString + logicKeys[i];
+        else regexString = regexString + logicKeys[i] + "|";
+      }
+      console.log("string", regexString);
       const mov = this.objdumb.match(/(mov|imul|idivq|sub|add|movl|xorl|jmp|imulq|sarq|addl|subq|leaq|movq|jg|cmpq)+[\s]+[:$,%?\-<>A-Za-z0-9()]*|cqto+\n/g);
 
       this.input = this.checkmov(mov);
       return 1;
     },
+  },
+  mounted() {
+    this.logic = x86;
   },
 };
 </script>

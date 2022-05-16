@@ -1,0 +1,21 @@
+{
+  "instruction": ["IF", "ID", "RE", "X", "WB"],
+  "opperator": {
+    "mov": {
+      "acceptAdress": true,
+      "dependsOnpredecessor": {
+        "Adress": "/%[a-zA-Z0-9]^*/",
+        "offset": null
+      },
+      "dependsOnsuccessor": null,
+      "move": {
+        "IF": 0,
+        "ID": 0,
+        "RE": 0,
+        "X": 0,
+        "WB": 0
+      }
+    },
+    "test": {}
+  }
+}
