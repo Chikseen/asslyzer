@@ -49,13 +49,11 @@
       <div class="arrlist_wrapper">
         <div class="arrlist">
           <p>Name</p>
-          <p>Level</p>
           <p>Addresses</p>
         </div>
 
         <div class="arrlist" @mouseover="highlihgt(index)" @mouseleave="unhigh(index)" :id="'syncHover1' + index" v-for="(item, index) in input" :key="index">
           <p>{{ item.name }}</p>
-          <p>{{ item.lvl }}</p>
           <p v-for="(ad, index2) in item.adrs" :key="index2">{{ ad }}</p>
         </div>
       </div>
@@ -75,8 +73,8 @@
 
 <script>
 import GP from "@/components/GraphPrinter";
-import x86 from "@/x86.json";
-import CISC from "@/CISC.json";
+import x86 from "@/logic/x86.json";
+import CISC from "@/logic/CISC.json";
 
 export default {
   components: {
@@ -125,7 +123,6 @@ export default {
       cqto
       idivq -0x38(%rbp)
       mov %rax,%rcx
-      mov -0x18(%rbp),%rax
       imul %rax,%rax
       cqto
       idivq -0x38(%rbp)
@@ -146,20 +143,18 @@ export default {
       `;
     },
     checkmatches(el) {
-      console.log(el);
       let back = [];
       this.allWords = {};
       if (el) {
         el.forEach((elm) => {
-          const adrs = elm.match(/%+[a-zA-Z0-1]*/g);
-          const name = elm.match(/[A-Za-z]*/);
+          const adrs = elm.match(/[%§][a-zA-Z\d]*/g);
+          let name = elm.match(/[A-Za-z]*/);
+          if (!this.logic.opperator[name[0]]) {
+            name[0] = name[0].replace(/[lqwb]$/, "");
+          }
           if (!this.logic.opperator[name[0]].acceptAdress) back.push({ name: name[0], lvl: null, adrs: null });
           else {
-            if (elm.match(/\(/)) {
-              back.push({ name: name[0], lvl: 1, adrs: adrs });
-            } else {
-              back.push({ name: name[0], lvl: 0, adrs: adrs });
-            }
+            back.push({ name: name[0], adrs: adrs });
           }
           if (!isNaN(this.allWords[name[0]])) this.allWords[name[0]] = this.allWords[name[0]] + 1;
           else this.allWords[name[0]] = 1;
@@ -170,8 +165,6 @@ export default {
   },
   watch: {
     objdumb() {
-      console.log(this.objdumb);
-
       const logicKeys = Object.keys(this.logic.opperator);
       let regexString = "";
 
@@ -179,11 +172,13 @@ export default {
         if (i + 1 === logicKeys.length) regexString = regexString + logicKeys[i];
         else regexString = regexString + logicKeys[i] + "|";
       }
-      regexString = "(" + regexString + ")([\\s][:$,%?\\-<>A-Za-z0-9()]*)";
+      regexString = "((" + regexString + ")[lqwb]*)(\\s[:\\$,%?\\-<>A-Za-z\\d()]*|,\\s[A-Za-z\\d])";
       console.log("ref", regexString);
       const regex = new RegExp(regexString, "g");
-      const matches = this.objdumb.match(regex);
+      const refined = this.objdumb.replace(/,\s*/g, ",");
+      const matches = refined.match(regex);
 
+      console.log("matches", matches);
       this.input = this.checkmatches(matches);
       return 1;
     },
@@ -198,11 +193,14 @@ export default {
       }
     },
     editLogic() {
-      console.log("chenage");
+      console.log("change");
       try {
         JSON.parse(this.editLogic); // precheck
         this.logic = JSON.parse(this.editLogic);
         this.isValidJSON = true;
+        const temp = this.objdumb; // Force Reprint
+        this.objdumb = "";
+        setTimeout(() => (this.objdumb = temp), 1);
       } catch (e) {
         this.isValidJSON = false;
         this.jsonError = e;

@@ -2,13 +2,13 @@
   <div class="graphWrapper">
     <div v-for="(item, index) in toDisplay" :key="index + 2" @mouseover="$emit('pHoverO', index)" @mouseleave="$emit('pHoverL', index)">
       <div>
-        <p v-if="arr[index]" :id="'syncHover2' + index" class="graphWrapper_com_nos" :style="`top: ${index * 25 - (isEasyOffset ? -21 : 4)}px;`">
-          {{ arr[index].name }}
+        <p v-if="toDisplay[index]" :id="'syncHover2' + index" class="graphWrapper_com_nos" :style="`top: ${index * 25 - (isEasyOffset ? -21 : 4)}px;`">
+          {{ toDisplay[index].name }}
         </p>
       </div>
-      <div v-if="arr.length > 1">
-        <div v-for="(opp, i) in logic.instruction" :key="i + '2'">
-          <span class="graphWrapper_com" :style="`top: ${(index * 25)+ 11}px; left: ${(index + 2) * 25 + item[opp]}px;`">
+      <div v-if="toDisplay.length > 1">
+        <div v-for="(opp, i) in logic.instruction" :key="i + '4'">
+          <span class="graphWrapper_com" :style="`top: ${index * 25 + 12}px; left: ${(index + 2) * 25 + item.position[opp]}px;`">
             <p>{{ opp }}</p>
           </span>
         </div>
@@ -22,44 +22,94 @@
 export default {
   props: {
     arr: { type: Array, default: () => [] },
-    logic: { type: Object, default: () => {} },
+    logic: {
+      type: Object,
+      default: () => {},
+    },
     isEasyOffset: { type: Boolean, default: true },
     isautoReduct: { type: Boolean, default: true },
     isResultShow: { type: Boolean, default: true },
   },
   computed: {
+    merged() {
+      let oppArray = [];
+      this.arr.forEach((elm) => {
+        oppArray.push({ ...elm, ...this.logic.opperator[elm.name] });
+      });
+      return oppArray;
+    },
     toDisplay() {
-      let arr = [];
-      let localOffset = { spacer: 0 };
+      let localOffset = {};
 
+      // Set Offset
       if (this.logic.instruction) {
         for (let i = 0; i < this.logic.instruction.length; i++) {
           localOffset[this.logic.instruction[i]] = i * 25;
         }
+        localOffset.spacer = 0;
+      }
+      console.log("the LocalOffset is: ", localOffset);
+
+      // Spacer Logic
+      for (let i = 0; i < this.merged.length; i++) {
+        if (this.isautoReduct) {
+          for (let j = 1; j < Object.keys(localOffset).length - 1; j++) {
+            const key = Object.keys(localOffset)[j];
+            console.log("check elm", key);
+            if (localOffset[Object.keys(localOffset)[j - 1]] - localOffset[key > 250]) {
+              localOffset[key] = localOffset[key] - 150;
+              localOffset.spacer = localOffset.spacer + 100;
+            } else localOffset.spacer = 0;
+          }
+        }
       }
 
-      for (let i = 0; i < this.arr.length; i++) {
-        if (this.isautoReduct) {
-          if (localOffset.RE - localOffset.ID > 250) {
-            localOffset.RE = localOffset.RE - 150;
-            localOffset.X = localOffset.X - 150;
-            localOffset.WB = localOffset.WB - 150;
-            localOffset.spacer = localOffset.spacer + 100;
-          } else localOffset.spacer = null;
-        }
+      let mergedC = this.merged;
+      // Place/WaitFor Logic
+      for (let i = 0; i < mergedC.length; i++) {
+        mergedC[i].position = {};
 
-        const elment = this.logic.opperator[this.arr[i].name];
-        const merged = { ...elment, ...this.arr[i] };
-        arr.push({ ...localOffset });
+        let hasNull = true;
+        let waitFor = {};
 
-        this.logic.instruction.forEach((elm) => {
-          if (merged.move) {
-            localOffset[elm] = localOffset[elm] + merged.move[elm] * 25;
+        Object.keys(localOffset).forEach((elm) => {
+          if (mergedC[i].dependsOnpredecessor.waitFor[elm] != null) {
+            hasNull = false;
+            waitFor = { wait: elm, for: mergedC[i].dependsOnpredecessor.waitFor[elm] };
           }
         });
+        console.log("HASNULL", hasNull);
+        let takeWith = 0;
+
+        for (let j = 0; j < Object.keys(localOffset).length - 1; j++) {
+          const elm = Object.keys(localOffset)[j];
+          mergedC[i].position[elm] = localOffset[elm];
+
+          if (mergedC[i].move && mergedC[i - 1]?.position && hasNull) {
+            console.log("is this manuekl");
+            localOffset[elm] = localOffset[elm] + (mergedC[i].move[elm] + takeWith) * 25;
+            takeWith = takeWith + mergedC[i].move[elm];
+          } else {
+            /*             console.log("_ _ _ _ _");
+            console.log("wait", waitFor);
+            console.log("merge all after", Object.keys(localOffset).indexOf(waitFor.wait));
+ */
+            if (j >= Object.keys(localOffset).indexOf(waitFor.wait)) {
+              /*               console.log("Push by", waitFor.wait);
+              console.log("for", localOffset[waitFor.for]);
+              console.log("wait", mergedC[i]?.position[waitFor.wait]);
+ */
+              if (mergedC[i]?.position[waitFor.wait] < localOffset[waitFor.for]) {
+                localOffset[elm] = localOffset[waitFor.for] + (j - 1) * 25;
+              }
+            }
+          }
+        }
+        takeWith = 0;
       }
-      arr.push({ ...localOffset });
-      return arr;
+      console.log("opp", mergedC);
+
+      return mergedC;
     },
   },
   data() {
@@ -94,6 +144,7 @@ export default {
     font-size: 0.75rem;
     border-radius: 2px;
     transition: all 0.2s;
+    z-index: 5;
 
     &_nos {
       position: absolute;
