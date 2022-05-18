@@ -51,9 +51,8 @@
           <p>Name</p>
           <p>Addresses</p>
         </div>
-
         <div class="arrlist" @mouseover="highlihgt(index)" @mouseleave="unhigh(index)" :id="'syncHover1' + index" v-for="(item, index) in input" :key="index">
-          <p>{{ item.name }}</p>
+          <p>{{ item.fullName }}</p>
           <p v-for="(ad, index2) in item.adrs" :key="index2">{{ ad }}</p>
         </div>
       </div>
@@ -107,6 +106,7 @@ export default {
   methods: {
     highlihgt(i) {
       if (i < this.input.length) {
+        console.log("document.getElementById(syncHover2 + i)",document.getElementById("syncHover2" + i))
         document.getElementById("syncHover1" + i).style.backgroundColor = "#ff7171";
         document.getElementById("syncHover2" + i).style.backgroundColor = "#ff7171";
       }
@@ -142,22 +142,27 @@ export default {
       mov %rax,-0x18(%rbp)
       `;
     },
-    checkmatches(el) {
+    checkmatches(el, allOpperators) {
       let back = [];
       this.allWords = {};
       if (el) {
         el.forEach((elm) => {
           const adrs = elm.match(/[%§][a-zA-Z\d]*/g);
-          let name = elm.match(/[A-Za-z]*/);
-          if (!this.logic.opperator[name[0]]) {
-            name[0] = name[0].replace(/[lqwb]$/, "");
+          let regexString = "";
+          let fullName = elm.match(/[A-Za-z]*/);
+
+          // get base word
+          for (let i = 0; i < allOpperators.length; i++) {
+            if (i + 1 === allOpperators.length) regexString = regexString + allOpperators[i];
+            else regexString = regexString + allOpperators[i] + "|";
           }
-          if (!this.logic.opperator[name[0]].acceptAdress) back.push({ name: name[0], lvl: null, adrs: null });
-          else {
-            back.push({ name: name[0], adrs: adrs });
-          }
-          if (!isNaN(this.allWords[name[0]])) this.allWords[name[0]] = this.allWords[name[0]] + 1;
-          else this.allWords[name[0]] = 1;
+          const opperatorNameRegEx = new RegExp(regexString);
+          const opperatorName = elm.match(opperatorNameRegEx)[0];
+          back.push({ fullName: fullName[0], opperatorName: opperatorName, adrs: adrs });
+
+          // update word counter
+          if (!isNaN(this.allWords[fullName[0]])) this.allWords[fullName[0]] = this.allWords[fullName[0]] + 1;
+          else this.allWords[fullName[0]] = 1;
         });
       }
       return back;
@@ -165,22 +170,38 @@ export default {
   },
   watch: {
     objdumb() {
-      const logicKeys = Object.keys(this.logic.opperator);
       let regexString = "";
+      let opperatorArray = [];
+      const allOpperators = Object.keys(this.logic.opperator);
 
-      for (let i = 0; i < logicKeys.length; i++) {
-        if (i + 1 === logicKeys.length) regexString = regexString + logicKeys[i];
-        else regexString = regexString + logicKeys[i] + "|";
+      allOpperators.forEach((opp) => {
+        const opperator = this.logic.opperator[opp];
+        opperatorArray.push(opp);
+        opperator.hasSuffix.forEach((suf) => {
+          opperatorArray.push(opp + suf);
+          opperator.hasPrefix.forEach((pre) => {
+            opperatorArray.push(pre + opp + suf);
+          });
+        });
+        opperator.hasPrefix.forEach((pre) => {
+          opperatorArray.push(pre + opp);
+        });
+      });
+      console.log("opperatorArray", opperatorArray);
+
+      for (let i = 0; i < opperatorArray.length; i++) {
+        if (i + 1 === opperatorArray.length) regexString = regexString + opperatorArray[i];
+        else regexString = regexString + opperatorArray[i] + "|";
       }
-      regexString = "((" + regexString + ")[lqwb]*)(\\s[:\\$,%?\\-<>A-Za-z\\d()]*|,\\s[A-Za-z\\d])";
+
+      regexString = "(" + regexString + ")(\\s[:\\$,%?\\-<>A-Za-z\\d()]*|,\\s[A-Za-z\\d])";
       console.log("ref", regexString);
       const regex = new RegExp(regexString, "g");
       const refined = this.objdumb.replace(/,\s*/g, ",");
       const matches = refined.match(regex);
 
       console.log("matches", matches);
-      this.input = this.checkmatches(matches);
-      return 1;
+      this.input = this.checkmatches(matches, allOpperators);
     },
     toLoad() {
       if (this.toLoad === "x86") {

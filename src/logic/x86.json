@@ -2,252 +2,50 @@
   "instruction": ["IF", "ID", "RE", "X", "WB"],
   "opperator": {
     "mov": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": "%[a-zA-Z0-9]^*",
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": "X",
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
+      "hasSuffix": ["l", "q", "w", "b"],
+      "hasPrefix": [],
+      "waitFor": {
+        "IF": null,
+        "ID": null,
+        "RE": "WB",
+        "X": null,
+        "WB": null
       },
       "move": {
         "IF": 0,
         "ID": 0,
-        "RE": 2,
+        "RE": 0,
         "X": 0,
-        "WB": 1
+        "WB": 0
       }
     },
-    "imul": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": "%[a-zA-Z0-9]^*",
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
+    "mul": {
+      "hasSuffix": ["l", "q", "w", "b"],
+      "hasPrefix": ["i"],
+      "waitFor": {
+        "IF": null,
+        "ID": "RE",
+        "RE": "WB",
+        "X": null,
+        "WB": null
       },
       "move": {
         "IF": 0,
         "ID": 0,
-        "RE": 1,
+        "RE": 0,
         "X": 0,
-        "WB": -1
+        "WB": 0
       }
     },
     "cqto": {
-      "acceptAdress": false,
-      "dependsOnpredecessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 0,
-        "X": 1,
-        "WB": 0
-      }
-    },
-    "idiv": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": "%[a-zA-Z0-9]^*",
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": true,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": -1,
-        "X": -1,
-        "WB": 0
-      }
-    },
-    "add": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": "%[a-zA-Z0-9]^*",
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 2,
-        "X": 0,
-        "WB": 0
-      }
-    },
-    "lea": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": "%[a-zA-Z0-9]^*",
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 1,
-        "X": 0,
-        "WB": 0
-      }
-    },
-    "jg": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": "%[a-zA-Z0-9]^*",
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 1,
-        "X": 0,
-        "WB": 0
-      }
-    },
-    "xor": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
+      "hasSuffix": [],
+      "hasPrefix": [],
+      "waitFor": {
+        "IF": null,
+        "ID": null,
+        "RE": null,
+        "X": null,
+        "WB": null
       },
       "move": {
         "IF": 0,
@@ -257,125 +55,15 @@
         "WB": 0
       }
     },
-    "jmp": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 0,
-        "X": 0,
-        "WB": 0
-      }
-    },
-    "sar": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 0,
-        "X": 0,
-        "WB": 0
-      }
-    },
-    "sub": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": "%[a-zA-Z0-9]^*",
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 1,
-        "X": 0,
-        "WB": 0
-      }
-    },
-    "cmp": {
-      "acceptAdress": true,
-      "dependsOnpredecessor": {
-        "Adress": "%[a-zA-Z0-9]^*",
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": "X",
-          "X": null,
-          "WB": null
-        }
-      },
-      "dependsOnsuccessor": {
-        "Adress": null,
-        "offset": null,
-        "waitFor": {
-          "IF": null,
-          "ID": null,
-          "RE": null,
-          "X": null,
-          "WB": null
-        }
+    "div": {
+      "hasSuffix": ["l", "q", "w", "b"],
+      "hasPrefix": ["i"],
+      "waitFor": {
+        "IF": null,
+        "ID": null,
+        "RE": null,
+        "X": null,
+        "WB": null
       },
       "move": {
         "IF": 0,
