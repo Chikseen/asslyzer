@@ -5,22 +5,6 @@
         <span class="graphWrapper_com" :style="`top: ${item.position.y * 25 + (isEasyOffset ? -25 : 0)}px; left: ${item.position[opperator] * 25 + 50}px;`">
           <p>{{ opperator }}</p>
         </span>
-        <!--  <div v-for="(item, index) in toDisplay" :key="index + 2" @mouseover="$emit('pHoverO', index)" @mouseleave="$emit('pHoverL', index)">
-          <div>
-            <p v-if="toDisplay[index]" :id="'syncHover2' + index" class="graphWrapper_com_nos" :style="`top: ${index * 25 - (isEasyOffset ? -21 : 4)}px;`">
-              {{ toDisplay[index].name }}
-        </p>
-      </div>
-      <div v-if="toDisplay.length > 1">
-        <div v-for="(opp, i) in logic.instruction" :key="i + '4'">
-          <span class="graphWrapper_com" :style="`top: ${index * 25 + 12}px; left: ${(index + 2) * 25 + item.position[opp]}px;`">
-            <p>{{ opp }}</p>
-          </span>
-            <div>
-              </div>
-        <p class="graphWrapper_space" v-if="item.spacer && isautoReduct" :style="`top: ${index * 25}px; left: ${(index + 2) * 25 + item.spacer}px;`">...</p>
-      </div>
-    </div>-->
       </div>
       <p :id="'syncHover2' + i" class="graphWrapper_com_nos" :style="`top: ${item.position.y * 25 - 16}px; left: ${0}px;`">
         {{ item.fullName }}
@@ -78,39 +62,39 @@ export default {
 
         // every data for positioning
         let shiftby = 0;
-        console.log("________", i);
         for (let j = 0; j < instruction.length; j++) {
           const opp = this.logic.instruction[j];
           data[i].position[opp] = j + i + offset[opp] + shiftby;
           if (i - 1 >= 0 && data[i].waitFor[opp] != null) {
             if (data[i - 1].position[data[i].waitFor[opp]] - data[i].position[opp] >= 0) {
-              /*               console.log("___");
-              console.log(opp); //id
-              console.log("waitfor");
-              console.log(data[i].waitFor[opp]); //x
-
-              console.log(data[i - 1].position[data[i].waitFor[opp]]); //id
-              console.log("waitfor");
-              console.log(data[i].position[opp]); //x */
               const oldpos = data[i].position[opp];
               data[i].position[opp] = data[i - 1].position[data[i].waitFor[opp]] + 1;
-              shiftby = data[i].position[opp] - oldpos; /*
-            console.log("shi", shiftby);
-            console.log("diff", data[i].position[opp] - oldpos); */
-            } else {
-              console.log("no need to wait");
-            }
-            console.log("compare", data[i].position[this.logic.instruction[j - 1]]);
-            console.log("and", data[i].position[opp]);
-            if (j > 0 && data[i].position[this.logic.instruction[j - 1]] >= data[i].position[opp]) {
-              console.log("pos is same by diff", data[i].position[this.logic.instruction[j - 1]] - data[i].position[opp]);
-              data[i].position[opp] = data[i].position[opp] + 1 + (data[i].position[this.logic.instruction[j - 1]] - data[i].position[opp]);
+              shiftby = data[i].position[opp] - oldpos;
             }
           }
+
+          // duration logic
+          if (data[i].position[this.logic.instruction[j - 1]] - data[i].duration[opp] < data[i].duration[opp]) {
+            if (i + 1 < data.length && data[i].adrs?.some((r) => data[i + 1].adrs?.includes(r))) {
+              data[i].position[opp] = data[i].position[opp] + data[i].duration[opp];
+            } else if (i + 1 < data.length && data[i].adrs == undefined || data[i + 1].adrs == undefined) {
+              data[i].position[opp] = data[i].position[opp] + data[i].duration[opp];
+            }
+          }
+          if (j > 0 && data[i].position[this.logic.instruction[j - 1]] >= data[i].position[opp]) {
+            data[i].position[opp] = data[i].position[opp] + 1 + (data[i].position[this.logic.instruction[j - 1]] - data[i].position[opp]);
+          }
+
+          // Auto Reduce Size
+          // Maybe later ...
+          /*           if (this.isautoReduct && data[i].position[opp] - data[i].position[this.logic.instruction[j - 1]] > 6) {
+            console.log("Space is greate than 5 should remove");
+            data[i].position[opp] = data[i].position[opp] - 3;
+          } */
         }
       }
 
-      console.log("toDisplay (befor return)", toDisplay);
+      //  console.log("toDisplay (befor return)", toDisplay);
       return toDisplay;
     },
   },

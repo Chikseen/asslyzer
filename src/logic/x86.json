@@ -1,77 +1,240 @@
 {
-  "instruction": ["IF", "ID", "RE", "X", "WB"],
-  "opperator": {
-    "mov": {
-      "hasSuffix": ["l", "q", "w", "b"],
-      "hasPrefix": [],
-      "waitFor": {
-        "IF": null,
-        "ID": null,
-        "RE": "WB",
-        "X": null,
-        "WB": null
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 0,
-        "X": 0,
-        "WB": 0
-      }
-    },
-    "mul": {
-      "hasSuffix": ["l", "q", "w", "b"],
-      "hasPrefix": ["i"],
-      "waitFor": {
-        "IF": null,
-        "ID": "RE",
-        "RE": "WB",
-        "X": null,
-        "WB": null
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 0,
-        "X": 0,
-        "WB": 0
-      }
-    },
-    "cqto": {
-      "hasSuffix": [],
-      "hasPrefix": [],
-      "waitFor": {
-        "IF": null,
-        "ID": null,
-        "RE": null,
-        "X": null,
-        "WB": null
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 0,
-        "X": 0,
-        "WB": 0
-      }
-    },
-    "div": {
-      "hasSuffix": ["l", "q", "w", "b"],
-      "hasPrefix": ["i"],
-      "waitFor": {
-        "IF": null,
-        "ID": null,
-        "RE": null,
-        "X": null,
-        "WB": null
-      },
-      "move": {
-        "IF": 0,
-        "ID": 0,
-        "RE": 0,
-        "X": 0,
-        "WB": 0
-      }
+    "instruction": [
+        "IF",
+        "ID",
+        "RE",
+        "X",
+        "WB"
+    ],
+    "opperator": {
+        "mov": {
+            "hasSuffix": [
+                "l",
+                "q",
+                "w",
+                "b"
+            ],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": "WB",
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 2,
+                "X": 0,
+                "WB": 3
+            }
+        },
+        "mul": {
+            "hasSuffix": [
+                "l",
+                "q",
+                "w",
+                "b"
+            ],
+            "hasPrefix": [
+                "i"
+            ],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": "X",
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "cqto": {
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": null,
+                "X": "WB",
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 1,
+                "WB": 0
+            }
+        },
+        "div": {
+            "hasSuffix": [
+                "l",
+                "q",
+                "w",
+                "b"
+            ],
+            "hasPrefix": [
+                "i"
+            ],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": null,
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": -1,
+                "X": -3,
+                "WB": -4
+            }
+        },
+        "sub": {
+            "hasSuffix": [
+                "l",
+                "q",
+                "w",
+                "b"
+            ],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": null,
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 1,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "add": {
+            "hasSuffix": [
+                "l",
+                "q",
+                "w",
+                "b"
+            ],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": null,
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 1,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "xor": {
+            "hasSuffix": [
+                "l",
+                "q",
+                "w",
+                "b"
+            ],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": null,
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "sar": {
+            "hasSuffix": [
+                "l",
+                "q",
+                "w",
+                "b"
+            ],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": null,
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "lea": {
+            "hasSuffix": [
+                "l",
+                "q",
+                "w",
+                "b"
+            ],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": "X",
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "cmp": {
+            "hasSuffix": [
+                "l",
+                "q",
+                "w",
+                "b"
+            ],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": "X",
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        }
     }
-  }
 }

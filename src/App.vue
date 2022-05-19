@@ -23,16 +23,24 @@
       <div>
         <div>
           <h5 style="line-height: 0; margin: 5px; white-space: nowrap">
-            Diffrent between matches and actual length of code (if to high there maybe is an error in the code)
+            Differenz between matches and actual length of code (if to high there maybe is an error in the JSON)
           </h5>
           <div>
             <p>Actuall: {{ this.objdumb.length != 0 ? this.objdumb.match(/\n/g).length : 0 }} Found: {{ this.input.length }} -> DIFF {{ lineDiff }}</p>
           </div>
         </div>
+        <h3>All Operators</h3>
         <div class="supportedWords">
           <div v-for="(key, index) in Object.keys(allWords)" :key="index + 'aw'">
             <p>{{ key }}</p>
             <p>{{ allWords[key] }}</p>
+          </div>
+        </div>
+        <h3>All Categories</h3>
+        <div class="supportedWords">
+          <div v-for="(key, index) in Object.keys(allOperators)" :key="index + 'ao'">
+            <p>{{ key }}</p>
+            <p>{{ allOperators[key] }}</p>
           </div>
         </div>
       </div>
@@ -42,9 +50,10 @@
       <button @click="toLoad = 'x86'" :class="toLoad == 'x86' ? 'active' : 'disabled'">x86-64</button>
       <button @click="toLoad = 'CISC'" :class="toLoad == 'CISC' ? 'active' : 'disabled'">CISC</button>
       <br />
-      <button @click="isEasyOffset = !isEasyOffset" :class="isEasyOffset ? 'active' : 'disabled'">Esay Offset</button>
+      <!--       <button @click="isEasyOffset = !isEasyOffset" :class="isEasyOffset ? 'active' : 'disabled'">Esay Offset</button>
       <button @click="isautoReduct = !isautoReduct" :class="isautoReduct ? 'active' : 'disabled'">Auto Fieldsize reduction</button>
       <button @click="isResultShow = !isResultShow" :class="isResultShow ? 'active' : 'disabled'">Show final Result</button>
+    -->
       <p>Read input</p>
       <div class="arrlist_wrapper">
         <div class="arrlist">
@@ -86,6 +95,7 @@ export default {
       objdumb: "",
       seeAllWords: false,
       allWords: {},
+      allOperators: {},
       isEasyOffset: false,
       isautoReduct: false,
       isResultShow: true,
@@ -106,7 +116,6 @@ export default {
   methods: {
     highlihgt(i) {
       if (i < this.input.length) {
-        console.log("document.getElementById(syncHover2 + i)",document.getElementById("syncHover2" + i))
         document.getElementById("syncHover1" + i).style.backgroundColor = "#ff7171";
         document.getElementById("syncHover2" + i).style.backgroundColor = "#ff7171";
       }
@@ -145,9 +154,11 @@ export default {
     checkmatches(el, allOpperators) {
       let back = [];
       this.allWords = {};
+      this.allOperators = {};
       if (el) {
         el.forEach((elm) => {
-          const adrs = elm.match(/[%§][a-zA-Z\d]*/g);
+          console.log("lm", elm);
+          const adrs = elm.match(/[%|$][a-zA-Z\d]*/g);
           let regexString = "";
           let fullName = elm.match(/[A-Za-z]*/);
 
@@ -163,6 +174,10 @@ export default {
           // update word counter
           if (!isNaN(this.allWords[fullName[0]])) this.allWords[fullName[0]] = this.allWords[fullName[0]] + 1;
           else this.allWords[fullName[0]] = 1;
+
+          // upadte opperator counter
+          if (!isNaN(this.allOperators[opperatorName])) this.allOperators[opperatorName] = this.allOperators[opperatorName] + 1;
+          else this.allOperators[opperatorName] = 1;
         });
       }
       return back;
@@ -187,19 +202,17 @@ export default {
           opperatorArray.push(pre + opp);
         });
       });
-      console.log("opperatorArray", opperatorArray);
 
       for (let i = 0; i < opperatorArray.length; i++) {
         if (i + 1 === opperatorArray.length) regexString = regexString + opperatorArray[i];
         else regexString = regexString + opperatorArray[i] + "|";
       }
 
-      regexString = "(" + regexString + ")(\\s[:\\$,%?\\-<>A-Za-z\\d()]*|,\\s[A-Za-z\\d])";
-      console.log("ref", regexString);
+      regexString = "(" + regexString + ")(\\s*[:\\$,%?\\-<>A-Za-z\\d()]*|,\\s[A-Za-z\\d])";
+      console.log("regexstring", regexString);
       const regex = new RegExp(regexString, "g");
       const refined = this.objdumb.replace(/,\s*/g, ",");
-      const matches = refined.match(regex);
-
+      const matches = refined.replace(/\s*/, "").match(regex);
       console.log("matches", matches);
       this.input = this.checkmatches(matches, allOpperators);
     },

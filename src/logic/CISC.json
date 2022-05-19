@@ -8,87 +8,47 @@
     ],
     "opperator": {
         "mov": {
-            "acceptAdress": true,
-            "dependsOnpredecessor": {
-                "Adress": "%[a-zA-Z0-9]^*",
-                "offset": true,
-                "waitFor": {
-                    "IF": null,
-                    "ID": "WB",
-                    "X": null,
-                    "WB": null
-                }
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "X": null,
+                "WB": null
             },
-            "dependsOnsuccessor": {
-                "Adress": true,
-                "offset": true,
-                "waitFor": {
-                    "IF": null,
-                    "ID": null,
-                    "X": null,
-                    "WB": null
-                }
-            },
-            "move": {
+            "duration": {
                 "IF": 0,
                 "ID": 0,
-                "RE": 0,
                 "X": 0,
                 "WB": 0
             }
         },
         "imul": {
-            "acceptAdress": null,
-            "dependsOnpredecessor": {
-                "Adress": null,
-                "offset": null,
-                "waitFor": {
-                    "IF": null,
-                    "ID": null,
-                    "X": null,
-                    "WB": null
-                }
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "X": null,
+                "WB": null
             },
-            "dependsOnsuccessor": {
-                "Adress": null,
-                "offset": null,
-                "waitFor": {
-                    "IF": null,
-                    "ID": null,
-                    "X": null,
-                    "WB": null
-                }
-            },
-            "move": {
+            "duration": {
                 "IF": 0,
-                "ID": 1,
-                "X": 1,
-                "WB": 1
+                "ID": 0,
+                "X": 0,
+                "WB": 0
             }
         },
         "cqto": {
-            "dependsOnpredecessor": {
-                "Adress": null,
-                "offset": null,
-                "waitFor": {
-                    "IF": null,
-                    "ID": null,
-                    "X": null,
-                    "WB": null
-                }
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "X": null,
+                "WB": null
             },
-            "acceptAdress": null,
-            "dependsOnsuccessor": {
-                "Adress": null,
-                "offset": null,
-                "waitFor": {
-                    "IF": null,
-                    "ID": null,
-                    "X": null,
-                    "WB": null
-                }
-            },
-            "move": {
+            "duration": {
                 "IF": 0,
                 "ID": 0,
                 "X": 0,

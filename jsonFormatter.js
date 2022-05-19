@@ -13,41 +13,24 @@ existingFiles.forEach((fileName) => {
     const file = new JSONdb(`${cpath}\\${fileName}.json`);
     let data = file.JSON();
     Object.keys(data.opperator).forEach((op) => {
-      if (data.opperator[op].acceptAdress == undefined) data.opperator[op].acceptAdress = null;
+      if (data.opperator[op].hasSuffix == undefined) data.opperator[op].hasSuffix = [];
+      if (data.opperator[op].hasPrefix == undefined) data.opperator[op].hasPrefix = [];
 
-      if (data.opperator[op].dependsOnpredecessor == undefined) data.opperator[op].dependsOnpredecessor = { Adress: null, offset: null };
-      if (data.opperator[op].dependsOnpredecessor.Adress == undefined) data.opperator[op].dependsOnpredecessor.Adress = null;
-      if (data.opperator[op].dependsOnpredecessor.offset == undefined) data.opperator[op].dependsOnpredecessor.offset = null;
-      if (data.opperator[op].dependsOnpredecessor.waitFor == undefined) data.opperator[op].dependsOnpredecessor.waitFor = {};
+      if (data.opperator[op].waitFor == undefined) data.opperator[op].waitFor = {};
       data.instruction.forEach((i) => {
-        if (data.opperator[op].dependsOnpredecessor.waitFor[i] == undefined) data.opperator[op].dependsOnpredecessor.waitFor[i] = null;
+        if (data.opperator[op].waitFor[i] == undefined) data.opperator[op].waitFor[i] = null;
       });
 
-      if (data.opperator[op].dependsOnsuccessor == undefined) data.opperator[op].dependsOnsuccessor = { Adress: null, offset: null };
-      if (data.opperator[op].dependsOnsuccessor.Adress == undefined) data.opperator[op].dependsOnsuccessor.Adress = null;
-      if (data.opperator[op].dependsOnsuccessor.offset == undefined) data.opperator[op].dependsOnsuccessor.offset = null;
-      if (data.opperator[op].dependsOnsuccessor.waitFor == undefined) data.opperator[op].dependsOnsuccessor.waitFor = {};
-      data.instruction.forEach((i) => {
-        if (data.opperator[op].dependsOnsuccessor.waitFor[i] == undefined) data.opperator[op].dependsOnsuccessor.waitFor[i] = null;
-      });
-
-      if (data.opperator[op].move == undefined || data.opperator[op].move == {}) {
-        data.opperator[op].move = {};
+      if (data.opperator[op].duration == undefined || data.opperator[op].duration == {}) {
+        data.opperator[op].duration = {};
         data.instruction.forEach((i) => {
-          data.opperator[op].move[i] = 0;
+          data.opperator[op].duration[i] = 0;
         });
       }
-
-      data.instruction.forEach((i) => {
-        if (data.opperator[op].move[i] == undefined || data.opperator[op].move[i] == {}) {
-          data.opperator[op].move[i] = 0;
-        }
-      });
     });
 
     file.JSON(data);
     file.sync();
-    //console.log(JSON.stringify(data, null, 2));
   } else {
     console.log(`The file '${fileName}' do not exists`);
   }
