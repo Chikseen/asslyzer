@@ -8,6 +8,8 @@
       <a href="https://github.com/Chikseen/asslyzer">Want to contribute ??? https://github.com/Chikseen/asslyzer</a>
     </p>
 
+    <CArrayGenVue />
+
     <button @click="loadExample">Load Example</button>
     <div>
       <button @click="isEditOpen = !isEditOpen" :class="!isEditOpen ? 'active' : 'disabled'">Edit ObjDumb Code</button>
@@ -81,12 +83,14 @@
 
 <script>
 import GP from "@/components/GraphPrinter";
+import CArrayGenVue from "./components/CArrayGen.vue";
 import x86 from "@/logic/x86.json";
 import CISC from "@/logic/CISC.json";
 
 export default {
   components: {
     GP,
+    CArrayGenVue
   },
   data() {
     return {
