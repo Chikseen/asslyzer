@@ -10,7 +10,9 @@
 
     <CArrayGenVue />
 
-    <button @click="loadExample">Load Example</button>
+    <button @click="loadExample('1')">Load Example V1</button>
+    <button @click="loadExample('2')">Load Example HG</button>
+    <button @click="loadExample('3')">Load Example HO3</button>
     <div>
       <button @click="isEditOpen = !isEditOpen" :class="!isEditOpen ? 'active' : 'disabled'">Edit ObjDumb Code</button>
       <button @click="isEditOpen = !isEditOpen" :class="isEditOpen ? 'active' : 'disabled'">Edit config JSON</button>
@@ -86,11 +88,12 @@ import GP from "@/components/GraphPrinter";
 import CArrayGenVue from "./components/CArrayGen.vue";
 import x86 from "@/logic/x86.json";
 import CISC from "@/logic/CISC.json";
+import exp from "@/logic/exampels.json";
 
 export default {
   components: {
     GP,
-    CArrayGenVue
+    CArrayGenVue,
   },
   data() {
     return {
@@ -130,30 +133,8 @@ export default {
         document.getElementById("syncHover2" + i).style.backgroundColor = "#ffffff00";
       }
     },
-    loadExample() {
-      this.objdumb = `      mov -0x10(%rbp),%rax
-      imul %rax,%rax
-      cqto
-      idivq -0x38(%rbp)
-      mov %rax,%rcx
-      imul %rax,%rax
-      cqto
-      idivq -0x38(%rbp)
-      sub %rax,%rcx
-      mov %rcx,%rdx
-      mov -0x20(%rbp),%rax
-      add %rdx,%rax
-      mov %rax,-0x60(%rbp)
-      mov -0x10(%rbp),%rax
-      imul -0x18(%rbp),%rax
-      add %rax,%rax
-      cqto
-      idivq -0x38(%rbp)
-      mov %rax,%rdx
-      mov -0x28(%rbp),%rax
-      add %rdx,%rax
-      mov %rax,-0x18(%rbp)
-      `;
+    loadExample(id) {
+      this.objdumb = exp["exmp" + id];
     },
     checkmatches(el, allOpperators) {
       let back = [];
@@ -184,6 +165,7 @@ export default {
           else this.allOperators[opperatorName] = 1;
         });
       }
+      console.log("BACK", back);
       return back;
     },
   },
@@ -207,6 +189,8 @@ export default {
         });
       });
 
+      opperatorArray = opperatorArray.sort().reverse();
+
       for (let i = 0; i < opperatorArray.length; i++) {
         if (i + 1 === opperatorArray.length) regexString = regexString + opperatorArray[i];
         else regexString = regexString + opperatorArray[i] + "|";
@@ -216,7 +200,8 @@ export default {
       console.log("regexstring", regexString);
       const regex = new RegExp(regexString, "g");
       const refined = this.objdumb.replace(/,\s*/g, ",");
-      const matches = refined.replace(/\s*/, "").match(regex);
+      console.log("refind", refined);
+      const matches = refined.match(regex);
       console.log("matches", matches);
       this.input = this.checkmatches(matches, allOpperators);
     },

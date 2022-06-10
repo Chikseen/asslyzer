@@ -9,7 +9,6 @@
     "opperator": {
         "mov": {
             "hasSuffix": [
-                "l",
                 "q",
                 "w",
                 "b"
@@ -25,9 +24,27 @@
             "duration": {
                 "IF": 0,
                 "ID": 0,
-                "RE": 2,
+                "RE": 0,
                 "X": 0,
                 "WB": 3
+            }
+        },
+        "movl": {
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": null,
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
             }
         },
         "mul": {
@@ -61,7 +78,7 @@
             "waitFor": {
                 "IF": null,
                 "ID": null,
-                "RE": null,
+                "RE": "X",
                 "X": "WB",
                 "WB": null
             },
@@ -132,7 +149,7 @@
             "waitFor": {
                 "IF": null,
                 "ID": null,
-                "RE": null,
+                "RE": "WB",
                 "X": null,
                 "WB": null
             },
@@ -225,6 +242,96 @@
                 "IF": null,
                 "ID": null,
                 "RE": "X",
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "push": {
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": null,
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "shr": {
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": "RE",
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "jle": {
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": "X",
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "jmp": {
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": null,
+                "X": null,
+                "WB": null
+            },
+            "duration": {
+                "IF": 0,
+                "ID": 0,
+                "RE": 0,
+                "X": 0,
+                "WB": 0
+            }
+        },
+        "cltq": {
+            "hasSuffix": [],
+            "hasPrefix": [],
+            "waitFor": {
+                "IF": null,
+                "ID": null,
+                "RE": "WB",
                 "X": null,
                 "WB": null
             },
